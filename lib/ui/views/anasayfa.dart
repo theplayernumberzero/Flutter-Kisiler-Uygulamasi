@@ -11,11 +11,35 @@ class Anasayfa extends StatefulWidget {
 }
 
 class _AnasayfaState extends State<Anasayfa> {
+  bool aramaYapiliyorMu = false;
+
+  Future<void> ara(String aramaKelimesi) async{
+    print("Kisi ara: $aramaKelimesi");
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Kisiler"),
+        title: aramaYapiliyorMu ?
+        TextField(decoration: const InputDecoration(hintText: "Ara"),
+        onChanged: (aramaSonucu){
+          ara(aramaSonucu);
+        },
+        ) :
+        const Text("Kisiler"),
+        actions: [
+          aramaYapiliyorMu ?
+          IconButton(onPressed: (){
+            setState(() {
+              aramaYapiliyorMu = false;
+            });
+          }, icon: const Icon(Icons.clear)):
+          IconButton(onPressed: (){
+            setState(() {
+              aramaYapiliyorMu = true;
+            });
+          }, icon: const Icon(Icons.search_rounded))
+        ],
       ),
       body: ElevatedButton(onPressed: (){
         var kisi = Kisiler(kisi_id: 1, kisi_ad: "Bahadir", kisi_tel: "58");
