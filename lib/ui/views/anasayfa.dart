@@ -16,6 +16,22 @@ class _AnasayfaState extends State<Anasayfa> {
   Future<void> ara(String aramaKelimesi) async{
     print("Kisi ara: $aramaKelimesi");
   }
+
+  Future<List<Kisiler>> kisileriYukle() async{
+    var kisilerListesi = <Kisiler>[];
+    var k1 = Kisiler(kisi_id: 1, kisi_ad: "Bahadir", kisi_tel: "58");
+    var k2 = Kisiler(kisi_id: 2, kisi_ad: "Umut", kisi_tel: "34");
+    var k3 = Kisiler(kisi_id: 3, kisi_ad: "Uzay", kisi_tel: "38");
+    kisilerListesi.add(k1);
+    kisilerListesi.add(k2);
+    kisilerListesi.add(k3);
+
+    return kisilerListesi;
+  }
+
+  Future<void> sil(int kisi_id) async{
+    print("Kisi sil: $kisi_id");
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,13 +57,62 @@ class _AnasayfaState extends State<Anasayfa> {
           }, icon: const Icon(Icons.search_rounded))
         ],
       ),
-      body: ElevatedButton(onPressed: (){
-        var kisi = Kisiler(kisi_id: 1, kisi_ad: "Bahadir", kisi_tel: "58");
-        Navigator.push(context, MaterialPageRoute(builder: (context) => DetaySayfa(kisi: kisi)))
-            .then((value) {
-          print("Anasayfaya dönüldü..");
-        });
-      }, child: const Text("DETAYA GIT")),
+      body: FutureBuilder<List<Kisiler>>(
+        future: kisileriYukle(),
+        builder: (context, snapshot){
+          if(snapshot.hasData){
+            var kisilerListesi = snapshot.data;
+            return ListView.builder(
+              itemCount: kisilerListesi!.length, //3
+              itemBuilder: (context, index){ //0,1,2 for döngüsü gibi çalışıyor
+                var kisi = kisilerListesi[index];
+                return GestureDetector(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => DetaySayfa(kisi: kisi)))
+                        .then((value) {
+                      print("Anasayfaya dönüldü..");
+                    });
+                  },
+                  child: Card(
+                    child: SizedBox(height: 100,
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(kisi.kisi_ad, style: const TextStyle(fontSize: 20),),
+                                Text(kisi.kisi_tel),
+                              ],
+                            ),
+                          ),
+                          const Spacer(),
+                          IconButton(onPressed: (){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text("${kisi.kisi_ad} silinsin mi?"),
+                                  action: SnackBarAction(
+                                    label: "Evet",
+                                    onPressed: (){
+                                      sil(kisi.kisi_id);
+                                    },
+                                  ),
+                                )
+                            );
+                          }, icon: const Icon(Icons.clear, color: Colors.black54,))
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          }else{
+            return const Center();
+            }
+          },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           Navigator.push(context, MaterialPageRoute(builder: (context) => const KayitSayfa()))
