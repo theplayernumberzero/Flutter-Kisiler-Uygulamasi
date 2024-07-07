@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kisiler_uygulamasi/data/entity/kisiler.dart';
+import 'package:kisiler_uygulamasi/ui/views/detay_sayfa.dart';
 import 'package:kisiler_uygulamasi/ui/views/kayit_sayfa.dart';
 
 class Anasayfa extends StatefulWidget {
@@ -15,9 +17,13 @@ class _AnasayfaState extends State<Anasayfa> {
       appBar: AppBar(
         title: const Text("Kisiler"),
       ),
-      body: const Center(
-
-      ),
+      body: ElevatedButton(onPressed: (){
+        var kisi = Kisiler(kisi_id: 1, kisi_ad: "Bahadir", kisi_tel: "58");
+        Navigator.push(context, MaterialPageRoute(builder: (context) => DetaySayfa(kisi: kisi)))
+            .then((value) {
+          print("Anasayfaya dönüldü..");
+        });
+      }, child: const Text("DETAYA GIT")),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           Navigator.push(context, MaterialPageRoute(builder: (context) => const KayitSayfa()))

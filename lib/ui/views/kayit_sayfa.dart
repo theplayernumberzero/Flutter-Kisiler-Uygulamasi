@@ -14,6 +14,7 @@ class _KayitSayfaState extends State<KayitSayfa> {
   Future<void> kaydet(String kisi_ad, String kisi_tel) async {
     print("Kisi kaydet: $kisi_ad - $kisi_tel");
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
